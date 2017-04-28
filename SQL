@@ -1,0 +1,132 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema Bank
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema Bank
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `Bank` DEFAULT CHARACTER SET latin1 ;
+USE `Bank` ;
+
+-- -----------------------------------------------------
+-- Table `Bank`.`Costumer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Bank`.`Costumer` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
+  `telephone` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `idCostumer_UNIQUE` (`id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 27
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Bank`.`Account`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Bank`.`Account` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `balance` INT(11) NOT NULL,
+  `creationDate` DATE NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `idCostumer` INT(11) NOT NULL,
+  PRIMARY KEY (`id`, `idCostumer`),
+  UNIQUE INDEX `idAccount_UNIQUE` (`id` ASC),
+  INDEX `fk_Account_Costumer_idx` (`idCostumer` ASC),
+  CONSTRAINT `fk_Account_Costumer`
+    FOREIGN KEY (`idCostumer`)
+    REFERENCES `Bank`.`Costumer` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Bank`.`Employee`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Bank`.`Employee` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Bank`.`Login`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Bank`.`Login` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NULL DEFAULT NULL,
+  `password` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 27
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Bank`.`Manager`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Bank`.`Manager` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `idManager_UNIQUE` (`id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `Bank`.`Transaction`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Bank`.`Transaction` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `amount` INT(11) NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `creationDate` DATE NOT NULL,
+  `idAccount_from` INT(11) NOT NULL,
+  `idAccount_to` INT(11) NOT NULL,
+  `idEmployee` INT(11) NOT NULL,
+  PRIMARY KEY (`id`, `idAccount_from`, `idAccount_to`, `idEmployee`),
+  UNIQUE INDEX `idTransaction_UNIQUE` (`id` ASC),
+  INDEX `fk_Transaction_Account1_idx` (`idAccount_from` ASC, `idAccount_to` ASC),
+  INDEX `fk_Transaction_Employee1_idx` (`idEmployee` ASC),
+  CONSTRAINT `fk_Transaction_Account1`
+    FOREIGN KEY (`idAccount_from` , `idAccount_to`)
+    REFERENCES `Bank`.`Account` (`id` , `idCostumer`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Transaction_Employee1`
+    FOREIGN KEY (`idEmployee`)
+    REFERENCES `Bank`.`Employee` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 11
+DEFAULT CHARACTER SET = latin1;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
